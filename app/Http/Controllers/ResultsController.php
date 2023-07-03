@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class ResultsController extends Controller
+{
+    /**
+    * Get results from sports api
+    */ 
+    public function showResults(Request $request){
+        // Load error page when season not provided by user
+        if(self::validateInput($request)) return self::validateInput($request);
+
+        // Build the search query array from the provided request
+        $searchQuery = self::buildSearchQuery($request);
+
+        // Fetch data from sports API
+        $host = config('services.sports');
+        $data = self::fetchData($searchQuery, $host);
+        
+        // Paginate
+        $data = self::paginateData($request, $data);
+
+        // Prep game data before loading to view
+        $games = self::prepDataForView($data['games']);
+        return view('results', [
+            'games' => $games,
+            'links' => $data['links'],
+            'team' => $request->input('team'),
+            'season' => $request->input('season'),
+            'league' => $request->input('league'),
+            'date' => $request->input('date'),
+        ]);
+        // var_dump($data);
+    }
+
+    
+    /**
+     * Loads error page if user doesn't provide a season in query
+     */
+    protected static function validateInput($request){
+        if(!$request->input('season')) exit('Please select a season');
+        return;
+    }
+
+    /**
+     * Build the search query array from the provided request
+     */
+    protected static function buildSearchQuery($request){
+        $searchQuery = [];
+        $searchQuery['season'] = $request->input('season');
+        if($request->input('league')!='All') $searchQuery['league'] = $request->input('league');
+        if($request->input('team')!='All') $searchQuery['team'] = $request->input('team');
+        if($request->input('date')) $searchQuery['date'] = $request->input('date');
+        return $searchQuery;
+    }
+
+    /**
+     * Fetch data from sports API
+     */
+    protected static function fetchData($searchQuery, $host){
+        try{
+            $response = Http::withHeaders($host)->get('https://' . $host['x-rapidapi-host'] .'/games', $searchQuery);
+
+            // Invalid credentials handler
+            if(!isset(json_decode($response, true)['response'])) exit('Invalid credentials');
+
+            $responseArray = json_decode($response, true)['response'];
+            return $responseArray;
+        } catch(\Exception $e) {
+            // Connection fail handler
+            exit('Connection failed. try again later');
+        }
+    }
+
+    /**
+     * Paginate data
+     */
+    protected static function paginateData($request, $data){
+        $page = $request->input('page') ? $request->input('page') : 1;
+        $paginatedRes = new LengthAwarePaginator(array_slice($data, ($page - 1) * 20, 20), count($data), 20, $page);
+        $games = $paginatedRes -> toArray()['data'];
+        $paginationLinks = $paginatedRes -> toArray()['links'];
+        $paginationLinks[0]['label'] = 'previous';
+        $paginationLinks[count($paginationLinks) - 1]['label'] = 'next';
+        return [
+            'games' => $games,
+            'links' => $paginationLinks
+        ];
+    }
+
+    /**
+     * Prep game data before loading to view
+     */
+    protected static function prepDataForView($games){
+        $preppedData = []; 
+        foreach($games as $game){
+            array_push($preppedData, [
+                'id' => $game['id'],
+                'date' => implode('', array_slice(str_split($game['date']['start'], 1), 0, 10)),
+                'visitors' => $game['teams']['visitors']['name'] ? $game['teams']['visitors']['name'] : 'No team name',
+                'home' => $game['teams']['home']['name'] ? $game['teams']['home']['name'] : 'No team name',
+                'status' => $game['status']['long'],
+                'visitorScore' => $game['scores']['visitors']['points'],
+                'homeScore' => $game['scores']['home']['points'],
+                'arena' => $game['arena']['name']
+            ]);
+        }
+        return $preppedData;
+    }
+}
