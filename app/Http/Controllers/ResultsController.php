@@ -46,7 +46,7 @@ class ResultsController extends Controller
      * Loads error page if user doesn't provide a season in query
      */
     protected static function validateInput($request){
-        if(!$request->input('season')) return view('error', ['title' => 'Error']);
+        if(!$request->input('season')) return redirect('/error')->with('error', 'Please select a season for your query');
         return;
     }
 

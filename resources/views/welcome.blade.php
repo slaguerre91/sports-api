@@ -29,7 +29,7 @@
   </div>
 
   <div>
-    <!-- Team dropdown menu populated with API call made in QueryController  -->
+  <!-- Team dropdown menu populated with API call made in QueryController  -->
     <label for="team">Choose a team:</label>
     <select id="team" class="form-select" name="team">
     <option value="All">All</option>
