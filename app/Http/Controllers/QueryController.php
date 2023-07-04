@@ -17,12 +17,13 @@ class QueryController extends Controller
         $leagues = self::loadLeagues($host);
         $teams = self::loadTeams($host);
 
+        // Load welcome view
         return view('welcome', [
             'teams' => $teams,
             'leagues' => $leagues,
-            'seasons' => $seasons
+            'seasons' => $seasons,
+            'title' => 'Search NBA Game Data'
         ]);
-        // var_dump($teams);
     }
 
     /**
@@ -71,12 +72,12 @@ class QueryController extends Controller
         $response = Http::withHeaders($host)->get('https://' . $host['x-rapidapi-host'] . '/' . $endPoint);
         
         // Invalid credentials handler
-        if(!isset(json_decode($response, true)['response'])) exit('Invalid credentials');
+        if(!isset(json_decode($response, true)['response'])) exit('API Connection error. Try again later.');
 
         return $response;
         } catch(\Exception $e) {
             // Connection fail handler
-            exit('Connection failed. try again later.');
+            exit('API Connection error. Try again later.');
         }
     }
 }

@@ -35,8 +35,9 @@ class ResultsController extends Controller
             'season' => $request->input('season'),
             'league' => $request->input('league'),
             'date' => $request->input('date'),
+            'initSearchTeam' => $request->input('initialSearchTeam'),
+            'title' => 'Search Results'
         ]);
-        // var_dump($data);
     }
 
     
@@ -44,7 +45,7 @@ class ResultsController extends Controller
      * Loads error page if user doesn't provide a season in query
      */
     protected static function validateInput($request){
-        if(!$request->input('season')) exit('Please select a season');
+        if(!$request->input('season')) return view('error', ['title' => 'Error']);
         return;
     }
 
@@ -68,13 +69,13 @@ class ResultsController extends Controller
             $response = Http::withHeaders($host)->get('https://' . $host['x-rapidapi-host'] .'/games', $searchQuery);
 
             // Invalid credentials handler
-            if(!isset(json_decode($response, true)['response'])) exit('Invalid credentials');
+            if(!isset(json_decode($response, true)['response'])) exit('API Connection error. Try again later.');
 
             $responseArray = json_decode($response, true)['response'];
             return $responseArray;
         } catch(\Exception $e) {
             // Connection fail handler
-            exit('Connection failed. try again later');
+           exit('API Connection error. Try again later.');
         }
     }
 

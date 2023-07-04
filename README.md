@@ -1,9 +1,59 @@
+# Flight Info
+
+This web app allows users to fetch game data from [API-NBA](https://api-sports.io/documentation/nba/v2).
+
+## Tech Stack
+
+-   PHP
+-   Laravel
+-   HTML
+-   CSS
+-   Bootstrap
+-   Font Awesome
+
 ## Installation
 
-1. Install dependencies
+### Install dependencies
 
 ```bash
 composer install
 ```
 
-2. Configure .env file (add 'SPORTS_API_HOST' and 'SPORTS_API_KEY')
+###Configure .env file
+Add the below variables:
+
+```.ENV
+SPORTS_API_HOST="hostname.com"
+SPORTS_API_KEY="apikey"
+```
+
+### Running the app
+
+Run the below command
+
+```bash
+php artisan serve
+```
+
+###Deployed
+Alternatively, web app is deployed on Heroku at the following link http://phplaravel-973382-3671050.cloudwaysapps.com
+
+## How to navigate folder structure
+
+This project was built using the Laravel framework. As a result, many of the folders and files are not part of the custom code. Below is a description of each file that constitutes the app proper.
+
+### Routes
+
+routes/web.php
+
+### Controllers
+
+app/Http/Controllers
+
+### Views
+
+resources/views
+
+### Public resources
+
+public
