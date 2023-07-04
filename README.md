@@ -19,7 +19,8 @@ This web app allows users to fetch game data from [API-NBA](https://api-sports.i
 composer install
 ```
 
-###Configure .env file
+### Configure .env file
+
 Add the below variables:
 
 ```.ENV
@@ -35,12 +36,13 @@ Run the below command
 php artisan serve
 ```
 
-###Deployed
+### Deployed
+
 Alternatively, web app is deployed on Heroku at the following link http://phplaravel-973382-3671050.cloudwaysapps.com
 
 ## How to navigate folder structure
 
-This project was built using the Laravel framework. As a result, many of the folders and files are not part of the custom code. Below is a description of each file that constitutes the app proper.
+This project was built using the Laravel framework. As a result, many of the directories and files are not part of the custom code. Below is a description of each folder or file relevent to this project.
 
 ### Routes
 
