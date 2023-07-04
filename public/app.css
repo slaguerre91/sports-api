@@ -1,3 +1,7 @@
+body {
+    font-size: 0.8em;
+}
+
 .pagination {
     display: inline-block;
 }
@@ -24,4 +28,13 @@ a:link {
 
 .btn-primary {
     background-color: #3b71ca;
+}
+
+td {
+    height: 2.5em;
+}
+
+img {
+    height: 100%;
+    width: 1.5em;
 }

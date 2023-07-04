@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ResultsController extends Controller
 {
@@ -69,13 +70,14 @@ class ResultsController extends Controller
             $response = Http::withHeaders($host)->get('https://' . $host['x-rapidapi-host'] .'/games', $searchQuery);
 
             // Invalid credentials handler
-            if(!isset(json_decode($response, true)['response'])) exit('API Connection error. Try again later.');
+            if(!isset(json_decode($response, true)['response'])) throw new HttpResponseException(redirect('/error')->with('error', 'API connection error. Please verify your credentials are correct or try again later.'));
+;
 
             $responseArray = json_decode($response, true)['response'];
             return $responseArray;
         } catch(\Exception $e) {
             // Connection fail handler
-           exit('API Connection error. Try again later.');
+           throw new HttpResponseException(redirect('/error')->with('error', 'API connection error. Please verify your credentials are correct or try again later.'));
         }
     }
 
@@ -105,7 +107,9 @@ class ResultsController extends Controller
                 'id' => $game['id'],
                 'date' => implode('', array_slice(str_split($game['date']['start'], 1), 0, 10)),
                 'visitors' => $game['teams']['visitors']['name'] ? $game['teams']['visitors']['name'] : 'No team name',
+                'visitorsLogo' => $game['teams']['visitors']['logo'],
                 'home' => $game['teams']['home']['name'] ? $game['teams']['home']['name'] : 'No team name',
+                'homeLogo' => $game['teams']['home']['logo'],
                 'status' => $game['status']['long'],
                 'visitorScore' => $game['scores']['visitors']['points'],
                 'homeScore' => $game['scores']['home']['points'],

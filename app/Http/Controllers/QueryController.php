@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class QueryController extends Controller
 {
@@ -72,12 +73,12 @@ class QueryController extends Controller
         $response = Http::withHeaders($host)->get('https://' . $host['x-rapidapi-host'] . '/' . $endPoint);
         
         // Invalid credentials handler
-        if(!isset(json_decode($response, true)['response'])) exit('API Connection error. Try again later.');
+        if(!isset(json_decode($response, true)['response'])) throw new HttpResponseException(redirect('/error')->with('error', 'API connection error. Please verify your credentials are correct or try again later.'));
 
         return $response;
         } catch(\Exception $e) {
             // Connection fail handler
-            exit('API Connection error. Try again later.');
+            throw new HttpResponseException(redirect('/error')->with('error', 'API connection error. Please verify your credentials are correct or try again later.'));
         }
     }
 }

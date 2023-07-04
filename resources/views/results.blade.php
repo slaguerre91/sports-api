@@ -69,8 +69,8 @@
                     @endif
                 @endif
                 <!-- Remaining fields -->
-                <td>{{$game['visitors']}} {{$game['visitorScore']}}</td>
-                <td>{{$game['home']}} {{$game['homeScore']}}</td>
+                <td><img class="mx-2" src="{{$game['visitorsLogo']}}" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';" alt="visitors-logo"> {{$game['visitors']}} {{$game['visitorScore']}}   {!!$game['visitorScore']> $game['homeScore'] ? '<strong>(W)</strong>' : '(L)'!!} </td>
+                <td> <img class="mx-2" src="{{$game['homeLogo']}}" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';" alt="home-logo">{{$game['home']}} {{$game['homeScore']}}   {!!$game['visitorScore']> $game['homeScore'] ? '(L)' : '<strong>(W)</strong> '!!}</td>
                 <td>{{$game['status']}}</td>
                 <td>{{$game['arena'] ? $game['arena'] : 'Arena info unavailable'}}</td>
             </tr>  
