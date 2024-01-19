@@ -1,4 +1,4 @@
-# Flight Info
+# Sports API
 
 This web app allows users to fetch game data from [API-NBA](https://api-sports.io/documentation/nba/v2).
 
